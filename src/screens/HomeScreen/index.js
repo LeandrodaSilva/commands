@@ -21,10 +21,10 @@ export default function HomeScreen(props) {
 
   function loadApps() {
     if (isLoading) return;
-
+    console.log('get')
     setIsLoading(true);
 
-    api.get('app')
+    api.get('/app')
     .then(response => setApps(response.data))
     .then(() => setIsLoading(false))
     .catch(() => props.navigation.replace('NotFound'))

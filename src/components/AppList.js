@@ -5,6 +5,7 @@ import App from "./App";
 import {useState} from "react";
 import Layout from "../constants/Layout";
 import {useNavigation} from "@react-navigation/native";
+import api from "../services/api";
 
 export default function AppList({apps, loadMore}) {
   const [numColumns, setNumColumns] = useState(parseInt(Layout.window.width / 100));
@@ -16,7 +17,7 @@ export default function AppList({apps, loadMore}) {
 
   function askToRemove(app) {
     async function remove() {
-      api.delete( `app/${app.id}`);
+      await api.delete(`app/${app.id}`);
     }
 
     Alert.alert(

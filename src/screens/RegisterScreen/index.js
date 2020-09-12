@@ -1,64 +1,27 @@
 import * as React from "react";
 import {Text, View} from "../../components/Themed";
-import { TextInput, Button, KeyboardAvoidingView, ActivityIndicator, Alert } from "react-native";
+import { TextInput, Button, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import FormRow from "../../components/FormRow";
 import styles from "./styles";
 import firebase from 'firebase';
-import {useDispatch} from "react-redux";
-import {authActions} from "../../store/authSlice";
 
-export default function LoginScreen() {
-  const [email, setEmail] = React.useState("");
-  const [senha, setSenha] = React.useState("");
+export default function RegisterScreen() {
+  const [email, setEmail] = React.useState("ld_silva13@hotmail.com");
+  const [senha, setSenha] = React.useState("admin123");
   const [isLoading, setIsLoading] = React.useState(false);
   const [message, setMessage] = React.useState("");
-  const dispatch = useDispatch();
 
-  async function doLogin() {
+  function doLogin() {
     setIsLoading(true);
-
-    try {
-      const resp = await firebase.auth()
-      .signInWithEmailAndPassword(email, senha);
-
-      if (resp.user.uid) {
-        dispatch(authActions.setAuthenticated(true));
-      }
-    } catch (error) {
-      if (error.code === 'auth/user-not-found') {
-        Alert.alert(
-          "Usuário não encontrado",
-          "Deseja criar um novo usuário?",
-          [
-            {
-              text: "Não",
-              onPress: () => {}
-            },
-            {
-              text: "Sim",
-              onPress: registerUser
-            }
-          ]
-        );
-      }
-      setMessage( error.code ? getMessageByErrorCode(error.code) : error)
-    }
-
-    setIsLoading(false);
-  }
-
-  async function registerUser() {
-    try {
-      const { user } = await firebase.auth()
-      .createUserWithEmailAndPassword(email, senha);
-
-      if (user.uid) {
-        console.log(user.uid)
-        dispatch(authActions.setAuthenticated(true));
-      }
-    } catch (error) {
-      setMessage( error.code ? getMessageByErrorCode(error.code) : error)
-    }
+    firebase
+    .auth()
+    .signInWithEmailAndPassword(email, senha)
+    .then(r => {
+      setMessage("Login realizado com sucesso!!");
+      console.log('Logou: '+ r.user.email);
+    })
+    .catch(error => setMessage(getMessageByErrorCode(error.code)))
+    .finally(() => setIsLoading(false));
   }
 
   function renderMessage() {
